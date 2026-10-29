@@ -1,55 +1,31 @@
-# Flood Monitoring & Intelligence System
-### Multi-Point Water Level, Rainfall & Flow Forecasting for the Kelani River Basin
+# Component 1: Edge Sensing Node, Dual-Path Telemetry, and Rate-of-Rise Intelligence
 
----
+## 1. Introduction
 
-## 1. Overview
+Component 1 focuses on real-time environmental sensing, wireless telemetry, and backend intelligence for flood detection. It uses an ESP32-based sensor station to measure water levels, rainfall/wetness, and pipe flow rates. 
 
-This project is an **integrated IoT-based flood monitoring and forecasting system** designed for the Kelani River basin. It combines real-time edge-sensing hardware, dual-path wireless telemetry, a Python intelligence backend, a machine-learning-driven forecasting engine, and a GIS-based visual dashboard.
+The system processes sensor data at the edge, packages it as a JSON payload, and transmits it via a dual-path communication method: Long-Range (LoRa) radio and Wi-Fi/MQTT. A Python FastAPI backend ingests this data, calculates the Rate of Rise (RoR) of the water level, and generates real-time Alert States that are served to the visualization dashboard.
 
-The system is composed of **three tightly integrated components**:
+## 2. Technologies Used
 
-| Component | Purpose | Owner |
-| :--- | :--- | :--- |
-| **Component 1** | Edge Sensing Node & Backend Intelligence (Rate of Rise) | Hardware / Backend |
-| **Component 2** | Interactive Emergency Dashboard (HTML/JS) | Frontend |
-| **Component 3** | Flow-Rate Forecasting & GIS Risk Mapping | ML / GIS |
+- ESP32-WROOM-32 Microcontroller (Arduino IDE / C++)
+- JSN-SR04T Waterproof Ultrasonic Sensor
+- LM393 Resistive Rain/Wetness Sensor
+- YF-S201 Hall-effect Flow Sensor
+- SX1278 LoRa Module (433 MHz)
+- Wi-Fi and MQTT (Mosquitto Local Broker & AWS IoT Core)
+- Python 3.11
+- FastAPI and Uvicorn
+- paho-mqtt
+- ArduinoJson / NVS Preferences Library
 
----
+## 3. Main Features
 
-## 2. System Architecture
+### 3.1 Edge Sensing and Auto-Calibration
 
-```text
-┌───────────────────────────────────────────────────────────────────┐
-│                     PHYSICAL ENVIRONMENT                          │
-│  [JSN-SR04T]  [LM393]  [YF-S201]                                  │
-│  (Water Level) (Rain)   (Flow)                                    │
-└──────────────────┬────────────────────────────────────────────────┘
-                   │
-                   ▼
-        ┌───────────────────────┐
-        │    ESP32 #1 (S01)     │ ◄── Auto-Calibration + Filtering
-        │   Sensor Station      │
-        └──────────┬────────────┘
-                   │
-        ┌──────────┴───────────┐
-        ▼                      ▼
-   [LoRa 433MHz]         [Wi-Fi/MQTT]
-        │                 (AWS + Local)
-        ▼                      │
-   ┌──────────┐                │
-   │ ESP32 #2 │                ▼
-   │ Receiver │      ┌─────────────────────────┐
-   └──────────┘      │  Python Intelligence    │
-                     │  Backend (FastAPI)      │
-                     │  • Rate of Rise Engine  │
-                     │  • Alert State Manager  │
-                     │  • ML Forecast Engine   │
-                     │  • GIS Risk Mapper      │
-                     └──────────┬──────────────┘
-                                │
-                                ▼
-                     ┌─────────────────────────┐
-                     │  Emergency Dashboard    │
-                     │  (HTML/JS/Leaflet/Chart)│
-                     └─────────────────────────┘
+The system reads three primary sensors connected to the ESP32. To ensure accuracy across different physical deployments, an **Auto-Calibration** mechanism is implemented using the ESP32's non-volatile storage (NVS/Preferences).
+
+On the first boot, the system measures the "empty bucket" distance (sensor-to-bottom). This value is saved to memory, eliminating the need to hardcode the calibration constant in the firmware. The water level is calculated as:
+
+```cpp
+waterLevel = sensorToBottomCm - measuredDistance;
