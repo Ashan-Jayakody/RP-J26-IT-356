@@ -1,47 +1,75 @@
-# Emergency Decision Support and Alerts
+# 🌊 KelaniFlood: Emergency Decision Support & Alert Dissemination
 
-## Overview
-The **Emergency Decision Support and Alerts** component bridges predictive modeling with actionable civil protection and disaster response. It continuously evaluates flood hazard levels, calculates localized vulnerability indices, generates multi-tiered public and official alerts, and offers intelligent spatial decision support for evacuation routing, shelter activation, and emergency resource staging.
+[![Python](https://img.shields.io/badge/Python-3.11+-blue.svg?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688.svg?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![Leaflet](https://img.shields.io/badge/Leaflet-1.9.4-green.svg?style=for-the-badge&logo=leaflet&logoColor=white)](https://leafletjs.com)
+[![Tests](https://img.shields.io/badge/Tests-11%20Passed-brightgreen.svg?style=for-the-badge)](#)
 
----
+## 📖 Overview
 
-## Key Objectives
-- **Dynamic Flood Risk Indexing**: Synthesize forecasted water levels, precipitation anomalies, soil saturation, and local terrain vulnerability into standardized multi-tier risk scores (Normal, Advisory, Watch, Warning, Severe Emergency).
-- **Geo-Targeted Alert Dissemination**: Dispatch automated, localized alert notifications to disaster management authorities, first responders, and community members via SMS gateways, push notifications, email, and webhooks.
-- **Evacuation Routing & Road Inundation Analysis**: Intersect predicted flood extents with road network graphs (OSM) to assess network cut-offs and compute safe, accessible evacuation corridors.
-- **Situational Awareness Dashboard**: Provide an interactive GIS-enabled situational control panel for emergency management personnel, displaying real-time sensor telemetries, danger zones, and logistical resource allocations.
+The **Emergency Decision Support and Alert Dissemination** component acts as the critical "last-mile" bridge between predictive flood models (Components 1, 2, and 3) and actionable guidance for civil protection. 
 
----
-
-## Architecture & Alerting Workflow
-```
-[Streamflow & Weather Predictions] ──┐
-[Demographic & Infrastructure GIS] ──┼─► [Risk Engine & Decision Core] ──► [Multi-Channel Notification Gateway]
-[Dam Release Downstream Alerts]    ──┘     (Severity Scoring & Routing)        (SMS / Push / Webhooks / Dashboards)
-```
+It ingests flood-risk information and the user's real-time GPS location to generate location-based alerts, recommend safe shelters, and facilitate emergency help requests between affected citizens and responders.
 
 ---
 
-## Directory Structure
+## 🚀 Key Implemented Functions (PP1 Prototype)
+
+### 1. Location-Based Flood Alert Engine (`src/alert_engine.py`)
+- **Geo-Spatial Analysis:** Evaluates the user's GPS coordinates against flood risk polygons using `Shapely`.
+- **Accurate Distance:** Converts Latitude/Longitude to UTM Zone 44N (meters) using `PyProj` for precise distance calculations.
+- **Severity Classification:** Generates standard alert levels based on proximity and risk:
+  - 🔴 **CRITICAL** (Inside a High-Risk Zone)
+  - 🟠 **WARNING** (Near a High-Risk Zone)
+  - 🟢 **SAFE** (Outside all risk zones)
+
+### 2. Shelter & Safe Route Recommendation (`src/shelter_recommender.py`)
+- **Smart Filtering:** Automatically skips shelters that are full (`Capacity <= Occupied`) or located inside active flood zones.
+- **Nearest Shelter Logic:** Ranks available shelters by distance and Estimated Time of Arrival (ETA).
+- **Path Risk Assessment:** Checks if the direct path to the shelter crosses a flood zone and warns the user accordingly.
+- **Interactive Map:** Visualizes the user's location and the recommended shelter using Leaflet.js.
+
+### 3. Emergency Help Request & Responder Dashboard
+- **Help Seekers:** Can submit requests with GPS location, urgency level (High/Medium/Low), and specific needs (Rescue, Food, Medicine, etc.).
+- **Responder View:** A dedicated dashboard where authorities can filter incoming requests by urgency, view details, and accept requests for dispatch.
+
+---
+
+## 🛠️ Technology Stack (Implemented)
+
+| Layer | Technologies Used |
+| :--- | :--- |
+| **Backend Logic** | Python 3.11, FastAPI, Pydantic |
+| **Geo-Spatial Processing** | Shapely, PyProj |
+| **Frontend & UI** | HTML5, CSS3, Vanilla JavaScript |
+| **Mapping & GIS** | Leaflet.js, OpenStreetMap (OSM) |
+| **Data Formats** | JSON, GeoJSON |
+| **Testing** | Pytest (11 Unit Tests) |
+
+---
+
+## 📂 Project Structure
+
 ```text
-emergency-decision-support-and-alerts/
-├── data/                  # Population rasters, critical infrastructure, road networks
+floodguard-kelani/
+│
 ├── src/
-│   ├── risk_assessment/   # Hazard scoring algorithms and multi-factor vulnerability indexers
-│   ├── evacuation/        # Graph-based routing, network cut-off simulations, shelter allocation
-│   ├── notification/      # SMS gateways (Twilio/local telco), Push notification handlers, email service
-│   ├── services/          # Real-time event broker, background task consumers
-│   └── api/               # REST/WebSocket endpoints feeding frontend dashboard
-├── dashboard/             # Web-based situational awareness interface (React / MapLibre / Leaflet)
-├── tests/                 # Unit tests for threshold evaluations and notification dispatches
-├── requirements.txt       # Backend dependencies
-└── README.md              # Component documentation
-```
-
----
-
-## Technology Stack
-- **Backend & Logic**: Python 3.10+, FastAPI, Celery, Redis, SQLAlchemy / PostgreSQL (PostGIS)
-- **GIS & Network Analysis**: OSMnx, NetworkX, GeoPandas, Shapely
-- **Frontend / Visualization**: React / TypeScript, MapLibre GL / Leaflet, Tailwind CSS
-- **Messaging & Notifications**: Twilio API, Firebase Cloud Messaging (FCM), WebSocket protocols
+│   ├── __init__.py
+│   ├── alert_engine.py          # Function 1: Alert Logic
+│   ├── shelter_recommender.py   # Function 2: Shelter Logic
+│   └── api.py                   # FastAPI Endpoints
+│
+├── data/
+│   ├── flood_risk_zones.json    # Mock GeoJSON Flood Zones
+│   └── shelter_locations.json   # Mock Shelter Data
+│
+├── tests/
+│   ├── test_alert_engine.py     # 5 Tests
+│   ├── test_api.py              # 3 Tests
+│   └── test_shelter_recommender.py # 3 Tests
+│
+├── web/
+│   └── index.html               # Web Dashboard (Leaflet + UI)
+│
+├── requirements.txt
+└── README.md
