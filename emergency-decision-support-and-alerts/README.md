@@ -1,9 +1,6 @@
 # 🌊 KelaniFlood: Emergency Decision Support & Alert Dissemination
 
-[![Python](https://img.shields.io/badge/Python-3.11+-blue.svg?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688.svg?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
-[![Leaflet](https://img.shields.io/badge/Leaflet-1.9.4-green.svg?style=for-the-badge&logo=leaflet&logoColor=white)](https://leafletjs.com)
-[![Tests](https://img.shields.io/badge/Tests-11%20Passed-brightgreen.svg?style=for-the-badge)](#)
+
 
 ## 📖 Overview
 
@@ -73,3 +70,5 @@ floodguard-kelani/
 │
 ├── requirements.txt
 └── README.md
+
+
