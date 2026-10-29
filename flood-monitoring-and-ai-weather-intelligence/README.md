@@ -1,47 +1,38 @@
-# Flood Monitoring & AI Weather Intelligence
+# Flood Monitoring & Intelligence Node
 
 ## Overview
-The **Flood Monitoring and AI Weather Intelligence** component serves as the foundational data acquisition and predictive meteorological layer for the flood forecasting system. It integrates multi-source meteorological observations, satellite/radar remote sensing feeds, and terrestrial IoT sensor networks. By leveraging deep learning and computer vision architectures (e.g., ConvLSTM, Vision Transformers), it performs high-resolution spatial precipitation nowcasting and extreme rainfall pattern recognition to provide advance early warning indicators for potential flood triggers.
+The **Flood Monitoring & Intelligence Node** is the foundational edge-computing and data-acquisition component of the flood forecasting system. 
+
+This component is responsible for real-time environmental data acquisition using physical sensors, robust wireless telemetry, and local intelligence generation. It integrates an ESP32-based sensor station that measures water level, rainfall/wetness, and pipe flow. The data is processed on the edge, structured as JSON, and transmitted via a **dual-path communication** method (LoRa and Wi-Fi/MQTT). 
+
+The data is then ingested by a Python backend which calculates the **Rate of Rise (RoR)** to detect sudden water level increases and exposes real-time alert states to the visualization dashboard via a REST API.
 
 ---
 
 ## Key Objectives
-- **Multi-Source Data Ingestion**: Stream and ingest real-time automated weather station (AWS) observations, Doppler radar reflectivities, numerical weather prediction (NWP) models, and satellite imagery.
-- **AI-Driven Precipitation Nowcasting**: Predict short-to-medium range precipitation intensity and spatial distribution over targeted river basins with high temporal fidelity (0–6 hours lead time).
-- **Meteorological Anomaly Detection**: Identify extreme weather events, convective storm tracks, and flash flood indicators using machine learning classification and time-series anomaly detection.
-- **Basin-Scale Rainfall Aggregation**: Compute real-time catchment-averaged precipitation and antecedent moisture metrics to feed hydrological runoff models.
+- **Multi-Sensor Edge Acquisition:** Continuously monitor water level (JSN-SR04T), rainfall/wetness (LM393), and water flow (YF-S201) using an ESP32 microcontroller.
+- **Robust Wireless Telemetry:** Transmit structured JSON telemetry using point-to-point LoRa (433 MHz) for long-range redundancy and Wi-Fi/MQTT for low-latency local integration.
+- **Edge Data Quality & Calibration:** Implement auto-calibration for the ultrasonic sensor (using ESP32 NVS/Preferences) and apply digital filtering to eliminate sensor noise and false triggers.
+- **Temporal Intelligence (Rate of Rise):** Process incoming data in the Python backend to calculate the speed of water level changes, providing early warnings before critical thresholds are breached.
 
 ---
 
 ## Architecture & Data Flow
-```
-[Satellite / Radar Feeds] ──┐
-[IoT Weather Stations]    ──┼─► [Data Ingestion & Preprocessing] ──► [AI Nowcasting Models] ──► [Precipitation Forecast API]
-[Numerical Weather APIs]  ──┘     (Quality Control & Gridding)          (ConvLSTM / ViT)            (Fed to Component 2 & 3)
-```
-
----
-
-## Directory Structure
 ```text
-flood-monitoring-and-ai-weather-intelligence/
-├── data/                  # Sample datasets, raster grids, station metadata
-├── notebooks/             # Exploratory data analysis and model training experiments
-├── src/
-│   ├── ingestion/         # Ingestion scripts for radar, satellite, and weather APIs
-│   ├── preprocessing/     # Spatial interpolation, raster gridding, and feature extraction
-│   ├── models/            # Deep learning architectures (nowcasting, rainfall estimation)
-│   ├── inference/         # Prediction pipelines and scheduled batch jobs
-│   └── api/               # REST API endpoints serving weather intelligence
-├── tests/                 # Unit and integration tests
-├── requirements.txt       # Python dependencies
-└── README.md              # Component documentation
-```
-
----
-
-## Technology Stack
-- **Languages & Frameworks**: Python 3.10+, PyTorch / TensorFlow
-- **Geospatial & Climate Data**: GDAL, Rasterio, GeoPandas, Xarray, NetCDF4
-- **Data Pipelines & API**: FastAPI, Celery, Redis, Pandas, NumPy
-- **Models**: Convolutional LSTM (ConvLSTM), MetNet-style architectures, Random Forest / XGBoost baselines
+[JSN-SR04T / LM393 / YF-S201 Sensors]
+                 │
+                 ▼
+       [ESP32 #1 (Sensor Node)] ──► [ESP32 #2 (LoRa Receiver)]
+                 │
+                 ├─► LoRa (433 MHz)
+                 │
+                 └─► Wi-Fi / MQTT (Dual: AWS IoT & Local Mosquitto)
+                                  │
+                                  ▼
+                     [Python Backend & RoR Engine]
+                                  │
+                                  ▼
+                     [FastAPI Server (REST Endpoints)]
+                                  │
+                                  ▼
+                    [HTML/JS Emergency Dashboard]
