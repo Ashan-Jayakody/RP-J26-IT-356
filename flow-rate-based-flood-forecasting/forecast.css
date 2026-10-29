@@ -1,0 +1,39 @@
+/* Component 3: Flood Forecast page (all classes start with fc- to avoid clashing with Component 4) */
+.fc-wrap { max-width: 1200px; margin: 0 auto; width: 100%; }
+.fc-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 15px; flex-wrap: wrap; margin-bottom: 20px; }
+.fc-title { font-size: 1.5rem; font-weight: 700; color: #183b5b; }
+.fc-sub { color: var(--text-muted); font-size: .92rem; margin-top: 4px; }
+.fc-mode { background: #fff4e5; color: #9a5b00; border: 1px solid #f5c26b; padding: 6px 12px; border-radius: 20px; font-size: .78rem; font-weight: 700; }
+.fc-error { background: #fdedec; color: #b91c1c; border: 1px solid #f5b7b1; padding: 14px 18px; border-radius: 10px; margin-bottom: 20px; }
+.fc-top { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+.fc-level-box { display: flex; align-items: center; gap: 18px; margin-bottom: 14px; }
+.fc-level-badge { font-size: 1.7rem; font-weight: 800; color: #fff; padding: 12px 26px; border-radius: 12px; letter-spacing: 1px; background: #94a3b8; }
+.fc-level-LOW { background: #27ae60; }
+.fc-level-MEDIUM { background: #f39c12; }
+.fc-level-HIGH { background: #e74c3c; }
+.fc-explain { font-size: .95rem; line-height: 1.6; color: #334155; }
+.fc-chart-wrap { position: relative; height: 380px; }
+.fc-hint { font-size: .8rem; color: var(--text-muted); margin-top: 10px; }
+.fc-table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+.fc-table th { text-align: left; padding: 10px 8px; color: #2c3e50; font-size: .78rem; text-transform: uppercase; border-bottom: 1px solid var(--border-color); }
+.fc-table td { padding: 10px 8px; border-bottom: 1px solid var(--border-color); color: #475569; }
+.fc-table tr.fc-row { cursor: pointer; }
+.fc-table tr.fc-row:hover { background: var(--bg-grey); }
+.fc-table tr.fc-selected { background: var(--primary-light); }
+.fc-pill { display: inline-block; padding: 3px 11px; border-radius: 20px; font-size: .75rem; font-weight: 700; color: #fff; }
+.fc-pill-LOW { background: #27ae60; }
+.fc-pill-MEDIUM { background: #f39c12; }
+.fc-pill-HIGH { background: #e74c3c; }
+#gis-forecast-map { width: 100%; height: 420px; border-radius: 8px; z-index: 1; background: #e5e5e5; }
+.fc-gis-legend { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 12px; font-size: .85rem; color: #475569; }
+.fc-gis-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 6px; vertical-align: middle; }
+.gis-tooltip { background: #1e3a5f; color: #fff; border: none; font-size: 11px; font-weight: 600; }
+
+.text-danger {
+    color: #dc2626;
+}
+
+.text-safe {
+    color: #1e9e55;
+}
+@media (max-width: 800px) { .fc-top { grid-template-columns: 1fr; } }
