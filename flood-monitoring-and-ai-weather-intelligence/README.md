@@ -1,4 +1,4 @@
-# Component 1: Edge Sensing Node, Dual-Path Telemetry, and Rate-of-Rise Intelligence
+# Component 1: Flood Monitoring and AI Weather  Intelligence
 
 ## 1. Introduction
 
